@@ -1,0 +1,12 @@
+{
+  "env": "stg",
+  "name": "dbtest27+1@yandex.com",
+  "emailVal": "dbtest27+1@yandex.com",
+  "emailInval": "dbtest27+999@yandex.com",
+  "passwordVal": "11111111",
+  "num": {
+    "dev": 7,
+    "stg": 11,
+    "prod": 111
+  }
+}

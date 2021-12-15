@@ -1,0 +1,49 @@
+{
+  "defaultCommandTimeout": 10000,
+  "responseTimeout": 30000,
+  "requestTimeout": 30000,
+  "pageLoadTimeout": 5000,
+  "projectId": "8b8kfd",
+  "fixturesFolder": false,
+  "supportFile": false,
+  "viewportWidth": 500,
+  "viewportHeight": 900,
+  "chromeWebSecurity": false,
+  "testFiles": "**/*-spec.js",
+  "env": {
+    "name": "dev",
+    "url": "https://asm.hitachi-qdx360.com/go/storage-acceleration/en",
+    "state": "post",
+    "username": "dbtest27+1@yandex.com",
+    "password": "11111111",
+    "userPoolId": "us-west-2_OXDkkhB2F",
+    "clientId": "1v6rr1ihgh1ou5b6dairckvk1n",
+    "MAILSLURP_API_KEY": "4fadf5ca791749475f773efe4257f3edaba80a5dba78ee6966f60cab01d98bd1"
+  },
+  "stg": {
+    "name": "stg",
+    "url": "https://stage.hitachivantara.com/go/storage-acceleration/en",
+    "state": "post",
+    "username": "dbtest27+1@yandex.com",
+    "password": "11111111",
+    "userPoolId": "us-west-2_4TGA9pSN8",
+    "clientId": "51v1sk81e1tbrikh19sh3ng10u",
+    "MAILSLURP_API_KEY": "4fadf5ca791749475f773efe4257f3edaba80a5dba78ee6966f60cab01d98bd1"
+  },
+  "dev": {
+    "name": "dev",
+    "url": "https://asm.hitachi-qdx360.com/go/storage-acceleration/en",
+    "state": "post",
+    "username": "dbtest27+1@yandex.com",
+    "password": "11111111",
+    "userPoolId": "us-west-2_OXDkkhB2F",
+    "clientId": "1v6rr1ihgh1ou5b6dairckvk1n",
+    "MAILSLURP_API_KEY": "4fadf5ca791749475f773efe4257f3edaba80a5dba78ee6966f60cab01d98bd1"
+  },
+  "options": {
+    "MAILSLURP_API_KEY_GitHub": "66efb1054bb99ea91dfc97250834840f302609b28eb3c75c16397a875941c4e5",
+    "MAILSLURP_API_KEY_dbtest27@gmail.com": "4fadf5ca791749475f773efe4257f3edaba80a5dba78ee6966f60cab01d98bd1",
+    "MAILSLURP_API_KEY_3": "",
+    "MAILSLURP_API_KEY_4": ""
+  }
+}

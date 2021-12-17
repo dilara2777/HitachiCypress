@@ -67,6 +67,9 @@ class RegistrationPage {
     radioBnNo() {
         return cy.get('#Comms_Opt_In__c-no')
     }
+    logoutBn() {
+        return cy.get('.button-lable')
+    }
 
     redErrorMarkIfInputFieldIncorrect() {
         return cy.get('.error-message')

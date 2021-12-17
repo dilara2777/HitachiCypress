@@ -6,41 +6,15 @@ import HomeSkinnyPage from "../../support/pageObject/HomeSkinnyPage";
 //npx cypress run --spec cypress/integration/skinny/*.js --headed
 //npx cypress run --record --key a0bb4e45-0119-46db-8d3d-3ed115e42ded ./node_modules/.bin/cypress run --spec cypress/integration/skinny/*Login.js --headed
 
-function enterLogPassClickOk(page, a, b) {
-    page.email().type(a)
-    page.password().type(b)
-    page.signInBn().should('not.be.disabled')
-    page.signInBn().click()
-    cy.get('.button-lable', {timeout: 15000}).should('have.length', 1)
-    cy.get('.button-lable', {timeout: 15000}).should('be.visible')
-
-}
-
-function verifyTextIsPresent(el) {
-    el.then(function (element) {
-        let actualText = element.text()
-        //cy.log(actualText + '\n')
-        expect(actualText).to.be.not.empty
-    })
-}
-
-function testVideo() {
-    cy.get('video')
-        .should("have.prop", 'paused', true)
-        .and("have.prop", 'ended', false)
-        .then(($video) => {
-            $video[0].play()
-        })
-    cy.get('video')
-        .should('have.prop', 'paused', false)
-        .and('have.prop', 'ended', false)
-    //https://glebbahmutov.com/blog/test-video-play/
-    // cy.get('video', {timeout: 1000}).should('have.prop', 'ended', true) // cy.get('video').should($video => { expect($video.get(0)).to.have.property('paused', true); });
-    //cy.pause()//cy.get('.MediaStyles__MediaChatPollContainer-sc-p5uh1a-1').click()
-    cy.visit(Cypress.env('url'))
-}
-
-//todo download, screenshot, best way to setup env
+//todo
+// download,
+// screenshot,
+// best way to setup env,
+// why if fn in commands -always fails? cy.type() failed because it requires a DOM element. The subject received was: > undefined OR dom issue
+// run reset pass only if reg successful ; cypress run test only if previous successful https://github.com/cypress-io/cypress/issues/3590 great link with code
+// https://filiphric.com/skip-test-conditionally-with-cypress great link
+// avoid skipping reset pass
+// logout afterEach
 
 describe('Home page flow test suite', function () {
 
@@ -57,7 +31,6 @@ describe('Home page flow test suite', function () {
 
     beforeEach(function () {
         cy.restoreLocalStorage();
-        cy.viewport(1200, 800)
         /* uncomment only if error in auth
         cy.get('body').then((body) => {
              if (body.find('.button-lable').length === 0) {
@@ -67,7 +40,7 @@ describe('Home page flow test suite', function () {
          cy.get('body').then((body) => {
              if (body.find('.button-lable').length === 0) {
                  const loginPage = new LoginPage()
-                 enterLogPassClickOk(loginPage, this.data.emailVal, this.data.passwordVal);
+                 cy.enterLogPassClickOk(loginPage, this.data.emailVal, this.data.passwordVal);
              }
          });*/
     });
@@ -81,7 +54,7 @@ describe('Home page flow test suite', function () {
         cy.saveLocalStorage();
     });
 
-/*    it('testMainWidget', function () {
+    it('testMainWidget', function () {
         const homePage = new HomeSkinnyPage()
         cy.log(Cypress.env('state'))
         let expMessage = ""
@@ -97,12 +70,11 @@ describe('Home page flow test suite', function () {
 
     it('testResources', function () {
         const homePage = new HomeSkinnyPage()
-        verifyTextIsPresent(homePage.resoursesTitle());
-        verifyTextIsPresent(homePage.resoursesLink());
+        cy.verifyTextIsPresent(homePage.resoursesTitle());
+        cy.verifyTextIsPresent(homePage.resoursesLink());
         homePage.resoursesImg().isVisible()
         //homePage.resoursesImg().should('be.visible')
 
-        let el = homePage.resoursesImg();
         cy.wait(500)
         // disableSmoothScroll();
         homePage.resoursesImg().eq(0).scrollIntoView()//.pause(100)//, {"capture":"fullPage"}
@@ -125,10 +97,10 @@ describe('Home page flow test suite', function () {
             text = text.toLowerCase()
             if ((text.includes('watch')) || (text.includes('video'))) {
                 $el.click();
-                testVideo();
+                cy.testVideo();
             }
         })
-    });*/
+    });
 
     it('testResourcesDownload', function () {
         /*    const homePage = new HomeSkinnyPage()
@@ -138,14 +110,14 @@ describe('Home page flow test suite', function () {
              text = text.toLowerCase()
              if ((text.includes('watch')) || (text.includes('video'))) {
                  $el.click();
-                 testVideo();
+                 cy.testVideo();
              }
-         })*/
+         })
         cy.get('[style="flex-basis: 50%;"] > :nth-child(1) > .event-info > .event-link').invoke('removeAttr', 'target').click()
-        cy.log(cy.url())
+        cy.log(cy.url())*/
     });
 
-   /* it('testMuchMore', function () {
+    it('testMuchMore', function () {
         const homePage = new HomeSkinnyPage()
         if ((Cypress.env('state').includes('active')) || (Cypress.env('state').includes('post')))
             homePage.muchMoreImg().should('not.exist')
@@ -157,8 +129,8 @@ describe('Home page flow test suite', function () {
 
     it('testSpeakers', function () {
         const homePage = new HomeSkinnyPage()
-        verifyTextIsPresent(homePage.speakerName());
-        verifyTextIsPresent(homePage.speakerTitle());
+        cy.verifyTextIsPresent(homePage.speakerName());
+        cy.verifyTextIsPresent(homePage.speakerTitle());
         homePage.speakerTitle().eq(0).scrollIntoView()//.pause(100)//, {"capture":"fullPage"}
         //cy.screenshot('testSpeakers', {"overwrite": true})
         cy.screenshot(this.test.title, {"overwrite": true})
@@ -166,7 +138,7 @@ describe('Home page flow test suite', function () {
 
     it('testVideo', function () {
         cy.get('[title="session video"]').click();
-        testVideo();
+        cy.testVideo();
     });
 
     it('testAgenda', function () {
@@ -176,9 +148,10 @@ describe('Home page flow test suite', function () {
             homePage.agendaTime().should('not.exist')
         else if (Cypress.env('state').includes('pre')) {
             homePage.agendaTime().should('be.visible')
-            verifyTextIsPresent(homePage.agendaTime());
+            cy.verifyTextIsPresent(homePage.agendaTime());
         }
-    });*/
+    });
 
 })
+
 

@@ -21,7 +21,75 @@ module.exports = (on, config) => {
   // `config` is the resolved Cypress config
 }
 
-const { isFileExist } = require('cy-verify-downloads');
+const {downloadFile} = require('cypress-downloadfile/lib/addPlugin')
+const tesseract = require("tesseract.js")
+const fs = require("fs")
+const Jimp = require("jimp");
+const pdfParser = require("pdf-parse");
 module.exports = (on, config) => {
-    on('task', { isFileExist })
+    on('task', {
+        downloadFile: downloadFile,
+        getImageText: getImageText,
+        compareImages: compareImages,
+        getPDFText: getPDFText
+    })
+    return config;
+}
+
+const compareImages = async (obj) => {
+    const {fileName1, fileName2} = obj
+    const example1 = await Jimp.read(fileName1)
+    const example2 = await Jimp.read(fileName2)
+    const example1Hash = example1.hash()
+    const example2Hash = example2.hash()
+    const distance = Jimp.distance(example1, example2)
+    const diff = Jimp.diff(example1, example2)
+
+    return !(example1Hash !== example2Hash || distance > 0.15 || diff > 0.15);
+}
+
+const getImageText = async (obj) => {
+    let {fileName, lang, logger} = obj
+    let recognizeResult = null
+    try {
+        if (fs.existsSync(fileName)) {
+            if (logger) {
+                const myLogger = {
+                    logger: m => console.log(m)
+                }
+                recognizeResult = await tesseract.recognize(fileName, lang, myLogger)
+            } else {
+                recognizeResult = await tesseract.recognize(fileName, lang)
+            }
+            if (recognizeResult) {
+                return recognizeResult.data.text
+            }
+        }
+    } catch (error) {
+        return error.message
+    }
+}
+
+const getPDFText = async (obj) => {
+    let {pdfFile, maxPages} = obj
+    let pdfBuffer = null;
+    let parsedPDF = "";
+    try {
+        if (fs.existsSync(pdfFile)) {
+            pdfBuffer = fs.readFileSync(pdfFile)
+            if (maxPages) {
+                parsedPDF = await pdfParser(pdfBuffer, {
+                    max: maxPages
+                })
+            } else {
+                parsedPDF = await pdfParser(pdfBuffer);
+            }
+            if (parsedPDF) { //null check step
+                //  console.log(parsedPDF.info)  console.log(parsedPDF.page)  console.log(parsedPDF.text)
+                return parsedPDF.text
+            }
+        }
+    } catch (error) {
+        return error.message
+    }
 }
